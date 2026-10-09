@@ -1,0 +1,24 @@
+import { chromium } from '@playwright/test';
+
+const output = process.env.REVIEW_OUTPUT ?? '/tmp/omnirush';
+const base = process.env.REVIEW_URL ?? 'http://127.0.0.1:3000';
+const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, deviceScaleFactor: 1 });
+const errors = [];
+page.on('pageerror', (error) => errors.push(error.message));
+await page.goto(base, { waitUntil: 'networkidle' });
+await page.waitForTimeout(2200);
+await page.screenshot({ path: `${output}/portfolio-desktop-hero.png` });
+await page.getByRole('button', { name: 'Pause animations' }).click();
+await page.screenshot({ path: `${output}/portfolio-desktop-full.png`, fullPage: true });
+await page.locator('#work').scrollIntoViewIfNeeded();
+await page.screenshot({ path: `${output}/portfolio-desktop-work.png` });
+await page.setViewportSize({ width: 390, height: 844 });
+await page.goto(base, { waitUntil: 'networkidle' });
+await page.waitForTimeout(800);
+await page.screenshot({ path: `${output}/portfolio-mobile-hero.png` });
+await page.screenshot({ path: `${output}/portfolio-mobile-full.png`, fullPage: true });
+await page.goto(`${base}/projects/graphql-sentinel/`, { waitUntil: 'networkidle' });
+await page.screenshot({ path: `${output}/portfolio-mobile-case.png`, fullPage: true });
+console.log(JSON.stringify({ errors, screenshots: output }, null, 2));
+await browser.close();
