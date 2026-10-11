@@ -7,3 +7,13 @@ out/
 test-results/
 playwright-report/
 .DS_Store
+snapshots/
+
+# Lighthouse / Chrome temp dirs
+CUserssatyaAppDataLocallighthouse*/
+lighthouse-*/
+chrome-*/
+
+# Windows
+Thumbs.db
+desktop.ini

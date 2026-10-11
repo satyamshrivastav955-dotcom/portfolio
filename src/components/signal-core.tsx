@@ -3,11 +3,32 @@
 import { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import type { ArtifactMode } from '@/content/artifact';
 import { useMotionPreference } from './motion-provider';
 import { CorePoster } from './core-poster';
 
-/** One bounded, visibility-aware renderer. Geometry, environment and RAF are owned here. */
-export default function SignalCore({ mode }: { mode: 'form' | 'signal' }) {
+function frameGeometry() {
+  const shape = new THREE.Shape();
+  shape.moveTo(-1.55, -1.55);
+  shape.lineTo(1.55, -1.55);
+  shape.lineTo(1.55, 1.55);
+  shape.lineTo(-1.55, 1.55);
+  shape.closePath();
+  const hole = new THREE.Path();
+  hole.moveTo(-1.19, -1.19);
+  hole.lineTo(-1.19, 1.19);
+  hole.lineTo(1.19, 1.19);
+  hole.lineTo(1.19, -1.19);
+  hole.closePath();
+  shape.holes.push(hole);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.13, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 2, steps: 1 });
+  geometry.center();
+  geometry.rotateX(-Math.PI / 2);
+  return geometry;
+}
+
+/** A four-layer machined assembly. This component owns every GPU resource and listener. */
+export default function SignalCore({ mode }: { mode: ArtifactMode }) {
   const host = useRef<HTMLDivElement>(null);
   const { paused } = useMotionPreference();
   const current = useRef({ paused, mode });
@@ -19,147 +40,185 @@ export default function SignalCore({ mode }: { mode: 'form' | 'signal' }) {
   useEffect(() => {
     const element = host.current;
     if (!element) return;
-    const mobile = window.matchMedia('(max-width: 700px)').matches;
     let renderer: THREE.WebGLRenderer;
-    try { renderer = new THREE.WebGLRenderer({ antialias: !mobile, alpha: true, powerPreference: 'low-power' }); }
+    try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' }); }
     catch { return; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1 : 1.25));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
     renderer.setClearColor(0x000000, 0);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
+    renderer.toneMappingExposure = 1.05;
     element.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 60);
-    camera.position.set(0, 0, 9.5);
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 50);
+    camera.position.set(0, 1.6, 9.2);
+    camera.lookAt(0, 0, 0);
     const pmrem = new THREE.PMREMGenerator(renderer);
     const room = new RoomEnvironment();
-    const environment = pmrem.fromScene(room, 0.035);
+    const environment = pmrem.fromScene(room, 0.04);
     scene.environment = environment.texture;
     room.dispose();
     pmrem.dispose();
 
-    const group = new THREE.Group();
-    group.scale.setScalar(0.87);
-    group.rotation.set(0.32, -0.25, -0.52);
-    scene.add(group);
-    const geometry = new THREE.TorusKnotGeometry(1.36, 0.33, mobile ? 160 : 260, mobile ? 20 : 32, 2, 3);
-    const material = new THREE.MeshPhysicalMaterial({ color: '#afa4e3', metalness: 1, roughness: 0.21, clearcoat: 1, clearcoatRoughness: 0.15, iridescence: 0.75, iridescenceIOR: 1.6, iridescenceThicknessRange: [180, 400] });
-    const knot = new THREE.Mesh(geometry, material);
-    group.add(knot);
-    const wireSource = new THREE.TorusKnotGeometry(1.36, 0.334, 110, 12, 2, 3);
-    const wire = new THREE.LineSegments(new THREE.WireframeGeometry(wireSource), new THREE.LineBasicMaterial({ color: '#beadff', transparent: true, opacity: 0, depthWrite: false }));
-    wire.visible = false;
-    wireSource.dispose();
-    group.add(wire);
+    const assembly = new THREE.Group();
+    assembly.scale.setScalar(0.9);
+    assembly.rotation.set(0.36, -0.48, -0.12);
+    scene.add(assembly);
 
-    const coreGeometry = new THREE.IcosahedronGeometry(0.58, 2);
-    const coreMaterial = new THREE.MeshPhysicalMaterial({ color: '#161820', metalness: 0.97, roughness: 0.13, flatShading: true, clearcoat: 1 });
+    const geometry = frameGeometry();
+    const edgeGeometry = new THREE.EdgesGeometry(geometry, 25);
+    const metal = new THREE.MeshPhysicalMaterial({ color: '#bfc1b9', metalness: 0.94, roughness: 0.33, clearcoat: 0.45, clearcoatRoughness: 0.3, transparent: true });
+    const wireMaterial = new THREE.LineBasicMaterial({ color: '#e5e6db', transparent: true, opacity: 0.2, depthWrite: false });
+    const inlayMaterial = new THREE.MeshStandardMaterial({ color: '#333a37', metalness: 0.72, roughness: 0.44, transparent: true });
+    const inlayGeometry = new THREE.BoxGeometry(2.08, 0.035, 2.08);
+    const detailMaterial = new THREE.LineBasicMaterial({ color: '#aeb8ae', transparent: true, opacity: 0.6 });
+    const layers: THREE.Group[] = [];
+
+    for (let index = 0; index < 4; index++) {
+      const layer = new THREE.Group();
+      layer.add(new THREE.Mesh(geometry, metal));
+      layer.add(new THREE.LineSegments(edgeGeometry, wireMaterial));
+      if (index === 0 || index === 2) layer.add(new THREE.Mesh(inlayGeometry, inlayMaterial));
+      const traces: THREE.Vector3[] = [];
+      for (let lane = 0; lane < 6; lane++) {
+        const x = -0.84 + lane * 0.335;
+        traces.push(new THREE.Vector3(x, 0.082, 1.23), new THREE.Vector3(x, 0.082, 1.46));
+        traces.push(new THREE.Vector3(-1.46, 0.082, x), new THREE.Vector3(-1.23, 0.082, x));
+      }
+      layer.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(traces), detailMaterial));
+      assembly.add(layer);
+      layers.push(layer);
+    }
+
+    const coreGeometry = new THREE.BoxGeometry(0.85, 0.7, 0.85);
+    const coreMaterial = new THREE.MeshPhysicalMaterial({ color: '#353b37', metalness: 0.86, roughness: 0.23, clearcoat: 0.5 });
     const core = new THREE.Mesh(coreGeometry, coreMaterial);
-    group.add(core);
-    const coreEdges = new THREE.LineSegments(new THREE.EdgesGeometry(coreGeometry), new THREE.LineBasicMaterial({ color: '#b2fae5', transparent: true, opacity: 0.25 }));
-    core.add(coreEdges);
+    core.add(new THREE.LineSegments(new THREE.EdgesGeometry(coreGeometry), detailMaterial));
+    assembly.add(core);
 
-    const rings: THREE.Group[] = [];
-    for (let i = 0; i < 3; i++) {
-      const orbit = new THREE.Group();
-      orbit.rotation.set(i * 0.9 + 0.7, i * 0.6, i * 0.45);
-      const points = Array.from({ length: 161 }, (_, n) => { const angle = n / 160 * Math.PI * 2; return new THREE.Vector3(Math.cos(angle) * (2.25 + i * 0.15), Math.sin(angle) * (2.25 + i * 0.15), 0); });
-      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), new THREE.LineBasicMaterial({ color: i === 1 ? '#adecd9' : '#a994ee', transparent: true, opacity: 0.2 }));
-      const node = new THREE.Mesh(new THREE.SphereGeometry(0.037, 10, 10), new THREE.MeshBasicMaterial({ color: i === 1 ? '#b1ffec' : '#d0bfff' }));
-      node.position.x = 2.25 + i * 0.15;
-      orbit.add(line, node);
-      group.add(orbit); rings.push(orbit);
+    const guidePoints: THREE.Vector3[] = [];
+    for (const x of [-1.38, 1.38]) for (const z of [-1.38, 1.38]) {
+      guidePoints.push(new THREE.Vector3(x, -1, z), new THREE.Vector3(x, 1, z));
     }
+    const guides = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(guidePoints), new THREE.LineDashedMaterial({ color: '#c4c8bc', transparent: true, opacity: 0.28, dashSize: 0.06, gapSize: 0.06 }));
+    guides.computeLineDistances();
+    assembly.add(guides);
 
-    // A deterministic spherical point distribution avoids hydration and random-seed drift.
-    const count = mobile ? 110 : 240;
-    const coordinates = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      const theta = i * 2.3999632297;
-      const y = 1 - (i / (count - 1)) * 2;
-      const r = Math.sqrt(1 - y * y);
-      const spread = 3.1 + (i % 7) * 0.19;
-      coordinates.set([Math.cos(theta) * r * spread, y * spread, Math.sin(theta) * r * spread], i * 3);
-    }
-    const particlesGeometry = new THREE.BufferGeometry();
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(coordinates, 3));
-    const particles = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({ color: '#a49fc5', size: 0.017, transparent: true, opacity: 0.5, sizeAttenuation: true }));
-    scene.add(particles);
-    scene.add(new THREE.AmbientLight('#b8b2cf', 1));
-    const violet = new THREE.PointLight('#a387ff', 42, 15); violet.position.set(-3, 3, 3); scene.add(violet);
-    const cyan = new THREE.PointLight('#a0ffe4', 32, 15); cyan.position.set(3, -1, 3); scene.add(cyan);
-    const white = new THREE.DirectionalLight('#ffffff', 3); white.position.set(1, 4, 3); scene.add(white);
+    scene.add(new THREE.AmbientLight('#dbded5', 1.2));
+    const key = new THREE.DirectionalLight('#fffaf0', 3);
+    key.position.set(-3, 5, 4);
+    scene.add(key);
+    const fill = new THREE.PointLight('#c7d3ce', 28, 16);
+    fill.position.set(3, 1, 3);
+    scene.add(fill);
+    const rim = new THREE.PointLight('#dcd7c7', 25, 16);
+    rim.position.set(-2, -1, -3);
+    scene.add(rim);
 
     let frame = 0;
     let visible = true;
     let disposed = false;
-    let last = 0;
-    let time = 0;
-    let signal = 0;
-    let scroll = 0;
     let contextAvailable = true;
+    let last = 0;
     let renderedAt = 0;
+    let time = 0;
+    let wireAmount = 0;
+    let separation = 0;
+    let scroll = 0;
     let didRender = false;
     const pointer = { x: 0, y: 0 };
+
     const render = (timestamp = 0) => {
       frame = 0;
       if (disposed || !visible || document.hidden || !contextAvailable) return;
-      const { paused: isPaused, mode: currentMode } = current.current;
+      const { paused: isPaused, mode: appearance } = current.current;
       if (!isPaused && timestamp - renderedAt < 32) { frame = requestAnimationFrame(render); return; }
       renderedAt = timestamp;
-      const dt = Math.min((timestamp - last) / 1000, 0.05);
+      const delta = Math.min((timestamp - last) / 1000, 0.05);
       last = timestamp;
-      if (!isPaused) time += dt;
-      signal += ((currentMode === 'signal' ? 1 : 0) - signal) * (isPaused ? 1 : 0.07);
-      wire.visible = signal > 0.005;
-      material.transparent = true; material.opacity = 1 - signal * 0.96;
-      (wire.material as THREE.LineBasicMaterial).opacity = signal * 0.6;
+      if (!isPaused) time += delta;
+
+      const easing = isPaused ? 1 : 0.085;
+      wireAmount += ((appearance === 'signal' ? 1 : 0) - wireAmount) * easing;
+      separation += ((appearance === 'layers' ? 1 : scroll * 0.5) - separation) * easing;
+      metal.opacity = 1 - wireAmount * 0.965;
+      inlayMaterial.opacity = 1 - wireAmount * 0.985;
+      wireMaterial.opacity = 0.16 + wireAmount * 0.62;
+      layers.forEach((layer, index) => {
+        layer.position.y = (index - 1.5) * (0.43 + separation * 0.49);
+        layer.position.x = (index - 1.5) * separation * 0.1;
+        layer.rotation.y = (index % 2 ? 1 : -1) * (0.025 + separation * 0.06);
+      });
+      guides.scale.y = 0.75 + separation * 0.82;
       if (!isPaused) {
-        group.rotation.y += (pointer.x * 0.25 + time * 0.14 - group.rotation.y) * 0.025;
-        group.rotation.x += (0.32 + pointer.y * 0.15 - group.rotation.x) * 0.025;
-        group.rotation.z = -0.52 + Math.sin(time * 0.15) * 0.15;
-        group.position.y = Math.sin(time * 0.45) * 0.09;
-        particles.rotation.y = time * 0.022;
-        rings.forEach((ring, i) => { ring.rotation.z = time * (0.075 + i * 0.035); });
-        core.rotation.y = -time * 0.13;
-        camera.position.z += (9.5 + scroll * 2 - camera.position.z) * 0.04;
-        group.position.x += (scroll * 0.5 - group.position.x) * 0.04;
+        assembly.rotation.y += (-0.48 + pointer.x * 0.22 + Math.sin(time * 0.11) * 0.14 - assembly.rotation.y) * 0.045;
+        assembly.rotation.x += (0.36 + pointer.y * 0.13 + scroll * 0.15 - assembly.rotation.x) * 0.045;
+        assembly.position.y = Math.sin(time * 0.45) * 0.05;
+        camera.position.z += (9.2 + scroll * 1.2 - camera.position.z) * 0.045;
       }
       renderer.render(scene, camera);
       if (!didRender) { didRender = true; setReady(true); }
       if (!isPaused) frame = requestAnimationFrame(render);
     };
-    const start = () => { if (!frame && !disposed && visible && !document.hidden && contextAvailable) { last = performance.now(); frame = requestAnimationFrame(render); } };
+
+    const start = () => {
+      if (!frame && !disposed && visible && !document.hidden && contextAvailable) {
+        last = performance.now();
+        frame = requestAnimationFrame(render);
+      }
+    };
     wake.current = start;
-    const resize = () => { const { width, height } = element.getBoundingClientRect(); renderer.setSize(width, height); camera.aspect = width / Math.max(height, 1); camera.updateProjectionMatrix(); start(); };
-    const observer = new ResizeObserver(resize); observer.observe(element);
-    const intersection = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) start(); else { cancelAnimationFrame(frame); frame = 0; } });
+    const resize = () => {
+      const { width, height } = element.getBoundingClientRect();
+      renderer.setSize(width, height);
+      camera.aspect = width / Math.max(height, 1);
+      camera.updateProjectionMatrix();
+      start();
+    };
+    const sizeObserver = new ResizeObserver(resize);
+    sizeObserver.observe(element);
+    const intersection = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) start();
+      else { cancelAnimationFrame(frame); frame = 0; }
+    });
     intersection.observe(element);
     const visibility = () => { if (document.hidden) { cancelAnimationFrame(frame); frame = 0; } else start(); };
-    const move = (event: PointerEvent) => { pointer.x = (event.clientX / innerWidth - 0.5) * 2; pointer.y = (event.clientY / innerHeight - 0.5) * 2; };
+    const move = (event: PointerEvent) => { pointer.x = event.clientX / innerWidth * 2 - 1; pointer.y = event.clientY / innerHeight * 2 - 1; };
     const onScroll = () => { scroll = Math.min(window.scrollY / innerHeight, 1); };
-    const contextLost = (event: Event) => { event.preventDefault(); contextAvailable = false; cancelAnimationFrame(frame); frame = 0; setReady(false); };
-    const contextRestored = () => { contextAvailable = true; setReady(true); start(); };
+    const lost = (event: Event) => { event.preventDefault(); contextAvailable = false; cancelAnimationFrame(frame); frame = 0; setReady(false); };
+    const restored = () => { contextAvailable = true; didRender = false; start(); };
     document.addEventListener('visibilitychange', visibility);
-    if (!mobile) window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('pointermove', move, { passive: true });
     window.addEventListener('scroll', onScroll, { passive: true });
-    renderer.domElement.addEventListener('webglcontextlost', contextLost);
-    renderer.domElement.addEventListener('webglcontextrestored', contextRestored);
+    renderer.domElement.addEventListener('webglcontextlost', lost);
+    renderer.domElement.addEventListener('webglcontextrestored', restored);
     resize();
 
     return () => {
-      disposed = true; wake.current = null; cancelAnimationFrame(frame);
-      observer.disconnect(); intersection.disconnect();
-      document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pointermove', move);
+      disposed = true;
+      wake.current = null;
+      cancelAnimationFrame(frame);
+      sizeObserver.disconnect();
+      intersection.disconnect();
+      document.removeEventListener('visibilitychange', visibility);
+      window.removeEventListener('pointermove', move);
       window.removeEventListener('scroll', onScroll);
-      renderer.domElement.removeEventListener('webglcontextlost', contextLost);
-      renderer.domElement.removeEventListener('webglcontextrestored', contextRestored);
-      const geometries = new Set<THREE.BufferGeometry>(); const materials = new Set<THREE.Material>();
-      scene.traverse((object) => { const mesh = object as THREE.Mesh; if (mesh.geometry) geometries.add(mesh.geometry); if (mesh.material) (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((item) => materials.add(item)); });
-      geometries.forEach((item) => item.dispose()); materials.forEach((item) => item.dispose());
-      environment.dispose(); renderer.dispose(); renderer.domElement.remove();
+      renderer.domElement.removeEventListener('webglcontextlost', lost);
+      renderer.domElement.removeEventListener('webglcontextrestored', restored);
+      const geometries = new Set<THREE.BufferGeometry>();
+      const materials = new Set<THREE.Material>();
+      scene.traverse((object) => {
+        const mesh = object as THREE.Mesh;
+        if (mesh.geometry) geometries.add(mesh.geometry);
+        if (mesh.material) (Array.isArray(mesh.material) ? mesh.material : [mesh.material]).forEach((item) => materials.add(item));
+      });
+      geometries.forEach((item) => item.dispose());
+      materials.forEach((item) => item.dispose());
+      environment.dispose();
+      renderer.dispose();
+      renderer.domElement.remove();
     };
   }, []);
 

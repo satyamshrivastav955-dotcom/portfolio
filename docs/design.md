@@ -1,5 +1,7 @@
 # Design and engineering notes
 
+> This document records V1. The active architectural revision is documented in [V2 release notes](v2-release.md).
+
 ## Direction: an engineering observatory
 
 The portfolio treats complex software as something that can be examined: a reflective signal core, fine technical annotations, diagrammatic previews, a compact system index, and case studies organized around decisions and evidence.

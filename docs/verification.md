@@ -1,5 +1,7 @@
 # Verification record
 
+> Historical V1 results. See [V2 release notes](v2-release.md) for the current revision's checks and scope.
+
 This document records checks performed on the portfolio itself. It does not certify or re-run the eight underlying project implementations.
 
 ## Environment

@@ -1,6 +1,8 @@
 # V2 plan — The Systems Observatory
 
-**Status:** Planned. This document describes the next version, not features already implemented in V1.
+**Status:** Architectural V2 foundation implemented. See [the V2 release notes](v2-release.md) for the exact delivered scope and verification. The remaining signature experiences below are a roadmap, not a claim that every planned interaction is complete.
+
+**Updated art direction:** warm charcoal, off-white drafting paper, thin white square grids, nested rectangular lines fading downward, brushed metal, and restrained sage/steel details. Prioritize professional clarity and precision over neon/glow styling.
 
 ## The ambition
 

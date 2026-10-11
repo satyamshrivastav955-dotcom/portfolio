@@ -9,7 +9,7 @@ const github = 'https://github.com/satyamshrivastav955-dotcom';
 export const projects: Project[] = [
   {
     id: 'argus', number: '01', name: 'ARGUS', subtitle: 'Offline AI video intelligence',
-    category: 'EDGE AI · COMPUTER VISION', group: 'Perception & AI', accent: '#b5a2ff',
+    category: 'EDGE AI · COMPUTER VISION', group: 'Perception & AI', accent: '#d8dccf',
     tagline: 'See the scene. Understand the event. Deliver the alert.',
     short: 'A perception-to-reasoning pipeline. Built for the edge.',
     summary: 'ARGUS is an edge-oriented AI video intelligence system that combines real-time visual perception, multi-object tracking, pose-based event detection, and vision-language reasoning. It transforms camera feeds into structured observations and event-driven alerts, with a focus on running within constrained local hardware environments and communicating alerts over a nearby device connection.',
@@ -42,7 +42,7 @@ export const projects: Project[] = [
   },
   {
     id: 'callshield', number: '02', name: 'CallShield', subtitle: 'Multimodal scam & impersonation defense',
-    category: 'AI SECURITY · MULTIMODAL REASONING', group: 'Security systems', accent: '#8be6cf',
+    category: 'AI SECURITY · MULTIMODAL REASONING', group: 'Security systems', accent: '#c3d0c5',
     tagline: 'Detect suspicious signals. Explain the risk. Help people respond.',
     short: 'Many signals. One understandable risk assessment.',
     summary: 'CallShield is a multimodal scam-defense platform designed to analyze suspicious voice, video, message, identity, and social-engineering signals. It organizes these signals into an explainable risk-assessment workflow, with connected Android, web, and desktop interfaces intended to support timely, user-centered responses to impersonation and fraud scenarios.',
@@ -71,7 +71,7 @@ export const projects: Project[] = [
   },
   {
     id: 'graphql-sentinel', number: '03', name: 'GraphQL-Sentinel', subtitle: 'Runtime GraphQL security gateway',
-    category: 'API SECURITY · DEVELOPER TOOLING', group: 'Security systems', accent: '#e6bc89',
+    category: 'API SECURITY · DEVELOPER TOOLING', group: 'Security systems', accent: '#d8cfb9',
     tagline: 'Inspect the operation, understand the risk, make an explainable security decision.',
     short: 'Security that understands the shape of a query.',
     summary: 'GraphQL-Sentinel is a GraphQL security gateway project focused on analyzing API operations before execution. It brings together query-structure analysis, configurable security policies, risk-based decision logic, and a developer-facing dashboard to explore suspicious requests and make GraphQL security easier to inspect and reason about.',
@@ -96,7 +96,7 @@ export const projects: Project[] = [
   },
   {
     id: 'hybrid-ai-nids', number: '04', name: 'Hybrid AI NIDS', subtitle: 'Network intrusion detection & adaptive SOC',
-    category: 'CYBERSECURITY · APPLIED ML', group: 'Security systems', accent: '#90c8f5',
+    category: 'CYBERSECURITY · APPLIED ML', group: 'Security systems', accent: '#c5cfd0',
     tagline: 'Detect known threats. Surface unusual behavior. Monitor changing traffic.',
     short: 'Four model perspectives. A more inspectable security signal.',
     summary: 'Hybrid AI NIDS is a research-oriented network intrusion detection system that combines supervised classification, unsupervised anomaly detection, temporal modeling, and decision-level fusion. Its accompanying security operations dashboard brings together traffic analysis, risk prioritization, alert workflows, threat-intelligence enrichment, and model-drift monitoring.',
@@ -115,7 +115,7 @@ export const projects: Project[] = [
   },
   {
     id: 'nexus-1', number: '05', name: 'NEXUS-1', subtitle: 'Language-to-action robot agent',
-    category: 'EMBODIED AI · ROBOTICS SIMULATION', group: 'Perception & AI', accent: '#e6b6ff',
+    category: 'EMBODIED AI · ROBOTICS SIMULATION', group: 'Perception & AI', accent: '#d3d5c6',
     tagline: 'Translate intent into action. Verify the physical result.',
     short: 'Language makes a plan. Physics gets the final word.',
     summary: 'NEXUS-1 is a language-driven robotic manipulation agent that converts natural-language instructions into structured pick-and-place and stacking tasks. It combines local LLM-based planning, six-degree-of-freedom inverse kinematics, MuJoCo physics simulation, and ground-truth state verification in a closed-loop execution and recovery workflow.',
@@ -134,7 +134,7 @@ export const projects: Project[] = [
   },
   {
     id: 'face-blockchain', number: '06', name: 'Face Blockchain', subtitle: 'Verifiable image provenance',
-    category: 'COMPUTER VISION · CRYPTOGRAPHIC INTEGRITY', group: 'Software & trust', accent: '#f0c887',
+    category: 'COMPUTER VISION · CRYPTOGRAPHIC INTEGRITY', group: 'Software & trust', accent: '#d8cfba',
     tagline: 'Find a visual match. Verify the evidence. Anchor its integrity.',
     short: 'A traceable chain from visual match to verifiable evidence.',
     summary: 'Face Blockchain Verification is an image-provenance verification pipeline that combines local face-feature analysis, reverse-image-search candidates, independent visual similarity checks, canonicalized evidence records, and blockchain anchoring. It creates a traceable verification record while keeping the face embedding itself off-chain.',
@@ -153,7 +153,7 @@ export const projects: Project[] = [
   },
   {
     id: 'taskorbit', number: '07', name: 'TaskOrbit', subtitle: 'Role-aware project delivery workspace',
-    category: 'FULL-STACK · WORKFLOW AUTOMATION', group: 'Software & trust', accent: '#b9c2ff',
+    category: 'FULL-STACK · WORKFLOW AUTOMATION', group: 'Software & trust', accent: '#c6cfca',
     tagline: 'One workspace from project brief to final delivery.',
     short: 'Make the handoffs explicit. Keep the work moving.',
     summary: 'TaskOrbit is a role-aware project delivery workspace that organizes the full lifecycle of a project—from client requirements and managerial allocation to execution, submission, review, revision, and completion. It combines customized workspaces, deadline conflict detection, versioned deliverables, and structured approval workflows in a unified interface.',
@@ -172,7 +172,7 @@ export const projects: Project[] = [
   },
   {
     id: 'student-intelligence', number: '08', name: 'Student Intelligence', subtitle: 'Explainable academic risk analysis',
-    category: 'EXPLAINABLE ML · RESPONSIBLE AI', group: 'Perception & AI', accent: '#b6ddb0',
+    category: 'EXPLAINABLE ML · RESPONSIBLE AI', group: 'Perception & AI', accent: '#c5d1bf',
     tagline: 'Predict the academic trajectory. Explain the factors. Explore actionable alternatives.',
     short: 'A prediction is a starting point. An explanation makes it useful.',
     summary: 'Student Performance Intelligence is an applied machine-learning system for categorizing student academic performance as High, Medium, or Low. It combines classical predictive models with feature attribution, counterfactual analysis, fairness auditing, and interactive analytics to make predictions more interpretable and useful for educational decision support.',

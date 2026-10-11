@@ -25,7 +25,7 @@ function SignalFusion() {
 function QueryTree() {
   return <>
     <g stroke="currentColor" fill="none" strokeOpacity=".35"><path d="M95 85h140v85h120v80h125M235 85h140M235 170v85H115M355 170h145M355 250v45" /></g>
-    {[[95,85,'QUERY'],[235,85,'USER'],[375,85,'NAME'],[235,170,'POSTS'],[115,255,'TITLE'],[355,170,'AUTHOR'],[500,170,'ID'],[480,250,'POSTS'],[355,295,'…']].map(([x,y,label], index) => <g key={label} className="tree-node" style={{ animationDelay: `${index * 0.13}s` }}><rect x={Number(x)-31} y={Number(y)-14} width="62" height="28" rx="2" fill="#151411" stroke="currentColor" strokeOpacity=".6" /><text x={x} y={Number(y)+3} textAnchor="middle" fontSize="8" fontFamily="monospace" fill="currentColor">{label}</text></g>)}
+    {[[95,85,'QUERY'],[235,85,'USER'],[375,85,'NAME'],[235,170,'POSTS'],[115,255,'TITLE'],[355,170,'AUTHOR'],[500,170,'ID'],[480,250,'POSTS'],[355,295,'…']].map(([x,y,label], index) => <g key={`${x}-${y}-${label}`} className="tree-node" style={{ animationDelay: `${index * 0.13}s` }}><rect x={Number(x)-31} y={Number(y)-14} width="62" height="28" rx="2" fill="#242925" stroke="currentColor" strokeOpacity=".6" /><text x={x} y={Number(y)+3} textAnchor="middle" fontSize="8" fontFamily="monospace" fill="currentColor">{label}</text></g>)}
     <text x="460" y="65" fontSize="9" fontFamily="monospace" fill="currentColor" opacity=".65">OPERATION INSPECTION</text>
   </>;
 }

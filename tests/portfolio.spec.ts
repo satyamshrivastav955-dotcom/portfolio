@@ -19,11 +19,11 @@ test('homepage is complete, error-free, and exposes all eight projects', async (
 test('project filtering preserves the selected category and restores the index', async ({ page }) => {
   await page.goto('/#work');
   await page.getByRole('button', { name: 'Security systems' }).click();
-  await expect(page.getByRole('status').first()).toContainText('Showing 3 projects');
+  await expect(page.locator('#work [role="status"]')).toContainText('Showing 3 projects');
   await expect(page.locator('#work a[href="/projects/argus/"]')).toHaveCount(0);
   await expect(page.locator('#work a[href="/projects/callshield/"]').first()).toBeVisible();
   await page.getByRole('button', { name: 'All systems' }).click();
-  await expect(page.getByRole('status').first()).toContainText('Showing 8 projects');
+  await expect(page.locator('#work [role="status"]')).toContainText('Showing 8 projects');
 });
 
 test('command palette supports search, keyboard navigation, close, and route changes', async ({ page }) => {
@@ -207,4 +207,35 @@ test('static content and project navigation remain usable without JavaScript', a
   await expect(page).toHaveURL(/argus/);
   await expect(page.locator('#overview')).toContainText('ARGUS');
   await context.close();
+});
+
+test('assembly layers have meaningful, keyboard-accessible controls', async ({ page, isMobile }) => {
+  await page.goto('/');
+  if (isMobile) {
+    const poster = await page.locator('.core-poster img').boundingBox();
+    const title = await page.locator('.hero-title-wrap').boundingBox();
+    expect(poster && title && poster.y + poster.height <= title.y).toBe(true);
+  }
+  const layers = page.getByRole('button', { name: '03 / LAYERS' });
+  await layers.focus();
+  await layers.press('Enter');
+  await expect(layers).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.artifact-description')).toContainText('verification');
+  await expect(page.locator('.artifact-layer-legend li')).toHaveCount(4);
+  await expect(page.locator('.core-poster img')).toHaveAttribute('src', '/core-layers.webp');
+  await page.getByRole('button', { name: '01 / FORM' }).click();
+  await expect(page.locator('.artifact-layer-legend')).toHaveCount(0);
+});
+
+test('project portal navigation works with full motion and browser history', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/#work');
+  await page.locator('.project-art-link').first().click();
+  await expect(page).toHaveURL(/\/projects\/argus\/$/);
+  await expect(page.locator('h1')).toHaveText('ARGUS.');
+  await page.goBack();
+  await expect(page.locator('#work-title')).toBeVisible();
+  expect(errors).toEqual([]);
 });

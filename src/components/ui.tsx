@@ -3,7 +3,7 @@ import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 export function Mark({ className = '' }: { className?: string }) {
-  return <svg className={`brand-mark ${className}`} viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M20 1v38M1 20h38M6.6 6.6l26.8 26.8M6.6 33.4 33.4 6.6" stroke="currentColor" strokeWidth="3" /><circle cx="20" cy="20" r="7" fill="currentColor" /></svg>;
+  return <svg className={`brand-mark ${className}`} viewBox="0 0 40 40" fill="none" aria-hidden="true"><path d="M3 13V3h10m14 0h10v10m0 14v10H27m-14 0H3V27" stroke="currentColor" strokeWidth="1.3" /><path d="M28 11H12v9h16v9H12" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="miter" /></svg>;
 }
 
 export function SectionLabel({ number, children }: { number: string; children: ReactNode }) {

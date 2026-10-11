@@ -1,6 +1,8 @@
 # Satyam Shrivastav — Engineering the Unseen
 
-A complete, statically generated portfolio built around eight supplied engineering projects. The visual identity combines oversized editorial typography, an original procedural signal core, animated system diagrams, and detailed, evidence-aware case studies.
+A complete, statically generated portfolio built around eight supplied engineering projects. The architectural V2 identity combines oversized editorial typography, fine white construction grids, a procedural metal assembly, warm-paper sections, and detailed, evidence-aware case studies.
+
+See **[V2 release notes](docs/v2-release.md)** for the current revision and verification. V1 source and production archives are preserved in **[snapshots/](snapshots/README.md)**.
 
 ## Run locally
 
@@ -28,14 +30,14 @@ The Windows-mounted filesystem made the initial package extraction unusually slo
 
 ## What’s included
 
-- **Original signal-core artwork:** a reflective Three.js torus-knot assembly, faceted inner core, orbital traces, deterministic particles, pointer response, and scroll-linked camera movement.
-- **Responsive rendering:** wide, fine-pointer screens receive interactive WebGL. Touch/mobile and reduced-motion screens receive lightweight renders of the same original scene. Form/signal switching works in both modes.
+- **Original assembly artwork:** four machined-metal Three.js frames with inner boards, a central core, alignment guides, pointer response, and scroll-linked separation.
+- **Responsive rendering:** wide, fine-pointer screens receive interactive WebGL. Touch/mobile and reduced-motion screens receive lightweight renders of the same original scene. Form / Signal / Layers controls work in both modes.
 - **Motion architecture:** immediate CSS typography choreography; lazily loaded GSAP/ScrollTrigger for editorial movement, text illumination, and diagram rotation; pointer-responsive project lighting and tilt.
 - **Complete project index:** category filters, three large showcases, and five compact editorial entries. Filters expose all eight projects.
-- **Eight shareable case studies:** overview, architecture explorer, engineering decisions, capabilities, evidence, limitations, source links, optional real media, and next-project navigation.
+- **Eight shareable case studies:** an opening focus/decision/evidence summary, overview, architecture explorer, engineering decisions, capabilities, evidence, limitations, source links, optional real media, and next-project navigation.
 - **Meaningful local interactions:** GraphQL depth-policy illustration and TaskOrbit review/revision lifecycle. Both are explicitly labeled illustrations.
 - **Repository media:** five reviewed project-media sets, including a user-controlled NEXUS simulation video. Each media record links to its original repository source.
-- **Navigation:** desktop active-section links, native-dialog mobile menu, Ctrl/Cmd+K searchable command palette, browser history, and direct-load routes.
+- **Navigation:** desktop active-section links, native-dialog mobile menu, Ctrl/Cmd+K searchable command palette, shared-element project transitions on supported browsers, browser history, and direct-load routes.
 - **Contact:** configured GitHub links and clipboard feedback, with email and résumé support activated by configuration.
 - **Accessibility:** semantic sections, keyboard navigation, focus states, dialog focus containment, skip link, global animation pause, reduced-motion support, and readable content without JavaScript.
 - **SEO:** per-project metadata, favicon, social image, robots.txt, conditional canonical URLs and sitemap, and a designed 404 page.
@@ -48,8 +50,10 @@ The Windows-mounted filesystem made the initial package extraction unusually slo
 | `src/content/projects.ts` | The eight supplied project stories, stack, features, architecture, decisions, evidence distinctions, limitations, contributions, repository/demo links |
 | `src/content/media.ts` | Screenshot/video/diagram paths, actual dimensions, descriptive captions, source links, video posters |
 | `src/content/types.ts` | Shared TypeScript content contracts |
+| `src/content/artifact.ts` | Assembly mode descriptions and conceptual layer names |
 | `public/projects/` | Optimized project media |
 | `src/app/globals.css` | Layered design tokens, layouts, motion, and responsive rules |
+| `src/app/architectural.css` | V2 drafting surfaces, assembly layout, case-study summaries, and responsive refinements |
 
 Search for **`REPLACE_ME`**. Missing personal facts are `null` or empty arrays, not invented credentials. Optional sections disappear cleanly until populated. See **[the content checklist](docs/content-checklist.md)** for exact remaining inputs.
 
@@ -85,9 +89,9 @@ npm test
 
 On Linux, Playwright may also require `npx playwright install-deps chromium` (system permissions required). The implementation session used downloaded browser libraries isolated under `/tmp/omnirush`; it did not change system packages.
 
-The Playwright suite covers desktop/mobile navigation, filters, keyboard search, case-study deep links, query examples, workflow revisions, clipboard success/failure, 320–1920px overflow checks, automated accessibility, responsive artwork, WebGL failure, 404s, repository video playback, missing-image fallback, and JavaScript-disabled reading/navigation.
+The 38-test Playwright suite covers desktop/mobile navigation, filters, keyboard search, case-study deep links, query examples, workflow revisions, clipboard success/failure, 320–1920px overflow checks, automated accessibility, responsive artwork, assembly layers, project transitions/history, WebGL failure, 404s, repository video playback, missing-image fallback, and JavaScript-disabled reading/navigation.
 
-**[Verification notes](docs/verification.md)** record actual checks and measurements, including their scope.
+**[V2 release notes](docs/v2-release.md)** record the current checks and measurements. **[V1 verification notes](docs/verification.md)** preserve the earlier results.
 
 ## Deploy
 
@@ -109,4 +113,4 @@ Set **`profile.siteUrl`** to the final HTTPS origin and rebuild to emit real can
 
 No remote font service or third-party scene embed is used at runtime. Media, fonts, graphics, and application pages are served locally.
 
-See **[design and engineering notes](docs/design.md)** for the visual direction, lifecycle ownership, and evidence policy.
+See **[V2 release notes](docs/v2-release.md)** for the current visual direction and **[V1 design and engineering notes](docs/design.md)** for the original architecture and evidence policy. **[The V2 roadmap](docs/v2-plan.md)** tracks the broader signature experiences and their remaining scope.

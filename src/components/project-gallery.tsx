@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type CSSProperties } from 'react';
-import Link from 'next/link';
+import Link from './transition-link';
 import { ArrowUpRight, Plus } from 'lucide-react';
 import { projects } from '@/content/projects';
 import type { Project } from '@/content/types';
@@ -14,7 +14,7 @@ const filters = ['All systems', 'Perception & AI', 'Security systems', 'Software
 function FeaturedProject({ project, large = false }: { project: Project; large?: boolean }) {
   const { paused } = useMotionPreference();
   return <article className={`featured-project ${large ? 'featured-large' : ''}`} style={{ '--project-accent': project.accent } as CSSProperties}>
-    <Link href={`/projects/${project.id}/`} className="project-art-link" onPointerMove={(event) => {
+    <Link href={`/projects/${project.id}/`} className="project-art-link" style={{ viewTransitionName: `preview-${project.id}` }} onPointerMove={(event) => {
       if (paused || event.pointerType !== 'mouse') return;
       const bounds = event.currentTarget.getBoundingClientRect();
       const x = (event.clientX - bounds.left) / bounds.width;
@@ -24,7 +24,7 @@ function FeaturedProject({ project, large = false }: { project: Project; large?:
       event.currentTarget.style.setProperty('--light-x', `${x*100}%`);
       event.currentTarget.style.setProperty('--light-y', `${y*100}%`);
     }} onPointerLeave={(event) => { event.currentTarget.style.setProperty('--tilt-x', '0deg'); event.currentTarget.style.setProperty('--tilt-y', '0deg'); }}><span className="sr-only">Explore {project.name}: {project.subtitle}. </span><div className="project-art-meta mono"><span><i /> SYSTEM {project.number}</span><span>{large ? 'PERCEPTION / REASONING / ACTION' : project.category.split(' · ')[0]}</span></div><ProjectVisual id={project.id} /><span className="art-caption mono">CONCEPTUAL SYSTEM VISUAL</span><span className="project-open"><ArrowUpRight size={26} /></span></Link>
-    <div className="featured-description"><div><span className="mono project-category">{project.category}</span><h3><Link href={`/projects/${project.id}/`}>{project.name}<ArrowUpRight size={large ? 32 : 25} /></Link></h3><p>{project.short}</p></div><div className="featured-stack">{project.stack.slice(0, large ? 4 : 3).map((technology) => <span key={technology}>{technology}</span>)}</div></div>
+    <div className="featured-description"><div><span className="mono project-category">{project.category}</span><h3 style={{ viewTransitionName: `title-${project.id}` }}><Link href={`/projects/${project.id}/`}>{project.name}<ArrowUpRight size={large ? 32 : 25} /></Link></h3><p>{project.short}</p></div><div className="featured-stack">{project.stack.slice(0, large ? 4 : 3).map((technology) => <span key={technology}>{technology}</span>)}</div></div>
   </article>;
 }
 

@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/space-grotesk';
 import '@fontsource/bebas-neue/latin-400.css';
 import './globals.css';
+import './architectural.css';
 import { editorial, profile } from '@/content/profile';
 import { Header } from '@/components/header';
 import { MotionProvider } from '@/components/motion-provider';
+import { PageTransitions } from '@/components/page-transitions';
 
 export const metadata: Metadata = {
   title: { default: editorial.seo.title, template: '%s — Satyam Shrivastav' },
@@ -16,8 +18,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { themeColor: '#0c0d10', colorScheme: 'dark' };
+export const viewport: Viewport = { themeColor: '#191c1d', colorScheme: 'dark' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body><MotionProvider><Header />{children}</MotionProvider></body></html>;
+  return <html lang="en" data-scroll-behavior="smooth"><body><MotionProvider><PageTransitions><Header />{children}</PageTransitions></MotionProvider></body></html>;
 }
