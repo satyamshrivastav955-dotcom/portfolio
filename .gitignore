@@ -10,7 +10,7 @@ playwright-report/
 snapshots/
 
 # Lighthouse / Chrome temp dirs
-CUserssatyaAppDataLocallighthouse*/
+*lighthouse*
 lighthouse-*/
 chrome-*/
 

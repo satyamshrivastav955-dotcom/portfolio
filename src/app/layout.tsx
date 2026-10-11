@@ -3,6 +3,7 @@ import '@fontsource-variable/space-grotesk';
 import '@fontsource/bebas-neue/latin-400.css';
 import './globals.css';
 import './architectural.css';
+import './editorial.css';
 import { editorial, profile } from '@/content/profile';
 import { Header } from '@/components/header';
 import { MotionProvider } from '@/components/motion-provider';
@@ -18,8 +19,8 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { themeColor: '#191c1d', colorScheme: 'dark' };
+export const viewport: Viewport = { themeColor: '#101110', colorScheme: 'dark' };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" data-scroll-behavior="smooth"><body><MotionProvider><PageTransitions><Header />{children}</PageTransitions></MotionProvider></body></html>;
+  return <html lang="en" data-scroll-behavior="smooth"><body><MotionProvider><div className="scroll-progress" aria-hidden="true" /><PageTransitions><Header />{children}</PageTransitions></MotionProvider></body></html>;
 }

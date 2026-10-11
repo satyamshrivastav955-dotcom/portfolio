@@ -7,7 +7,9 @@ import { projects, getProject } from '@/content/projects';
 import { profile } from '@/content/profile';
 import { ActionLink } from '@/components/ui';
 import { CaseHero } from '@/components/case-hero';
-import { Architecture, ProjectInteraction } from '@/components/architecture';
+import { ProjectInteraction } from '@/components/architecture';
+import { SystemStory } from '@/components/system-story';
+import { ProjectExperiments } from '@/components/project-experiments';
 import { AssetGallery } from '@/components/asset-gallery';
 import { Footer } from '@/components/contact';
 
@@ -32,14 +34,15 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
   const project = getProject(slug);
   if (!project) notFound();
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
+  const previous = projects[(projects.indexOf(project) - 1 + projects.length) % projects.length];
   return <><main id="main" className="case-page" style={{ '--project-accent': project.accent } as CSSProperties}>
     <CaseHero project={project} />
     <div className="case-body container"><aside className="case-sidebar"><span className="mono">IN THIS CASE STUDY</span><nav aria-label="Case study contents"><a href="#overview">01 / Overview</a><a href="#architecture">02 / Architecture</a><a href="#decisions">03 / Engineering decisions</a><a href="#features">04 / System capabilities</a><a href="#evidence">05 / Evidence & boundaries</a>{project.assets.length > 0 && <a href="#visual-evidence">06 / Visual record</a>}</nav><a className="case-source-link" href={project.repository} target="_blank" rel="noopener noreferrer"><GitBranch size={16} /> Source code <ArrowUpRight size={14} /></a></aside>
       <div className="case-content"><section className="case-section" id="overview"><div className="case-section-title"><span className="mono">01 / OVERVIEW</span><h2>{project.subtitle}</h2></div><p className="case-summary">{project.summary}</p>{project.overview.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{project.contribution && <div className="contribution-note"><span className="mono">COLLABORATIVE WORK / OWNERSHIP</span><p>{project.contribution}</p></div>}</section>
-      <section className="case-section" id="architecture"><div className="case-section-title"><span className="mono">02 / ARCHITECTURE</span><h2>Inside the system.</h2><p>From input to outcome. Select a stage to follow the engineering story.</p></div><Architecture nodes={project.architecture} /><ProjectInteraction id={project.id} /></section>
+      <section className="case-section" id="architecture"><div className="case-section-title"><span className="mono">02 / ARCHITECTURE</span><h2>Inside the system.</h2><p>Follow the connections as you read, or select a stage to inspect it.</p></div><SystemStory project={project} /><ProjectInteraction id={project.id} /><ProjectExperiments id={project.id} /></section>
       <section className="case-section" id="decisions"><div className="case-section-title"><span className="mono">03 / ENGINEERING DECISIONS</span><h2>The choices behind the build.</h2></div><div className="decision-list">{project.decisions.map((decision,index) => <article key={decision.title}><span className="decision-number">0{index+1}</span><div><h3>{decision.title}</h3><p>{decision.text}</p></div></article>)}</div></section>
       <section className="case-section" id="features"><div className="case-section-title"><span className="mono">04 / SYSTEM CAPABILITIES</span><h2>What the project explores.</h2></div><ul className="feature-list">{project.features.map((feature) => <li key={feature}><Check size={16} /><span>{feature}</span></li>)}</ul></section>
       <section className="case-section" id="evidence"><div className="case-section-title"><span className="mono">05 / EVIDENCE & BOUNDARIES</span><h2>The work. In context.</h2><p>Implementation, experiments, and illustrative previews are different kinds of evidence. Their scope matters.</p></div><div className="evidence-list">{project.evidence.map((evidence) => <article key={evidence.title}><span className={`evidence-kind mono kind-${evidence.kind}`}>{evidence.kind}</span><h3>{evidence.title}</h3><p>{evidence.text}</p></article>)}</div><div className="limitations"><span className="mono">LIMITATIONS & REMAINING WORK</span><p>{project.limitations}</p></div>{project.related && <a className="related-study" href={project.related.url} target="_blank" rel="noopener noreferrer"><div><span className="mono">RELATED / SEPARATE TECHNICAL MODULE</span><h3>{project.related.label}</h3><p>{project.related.description}</p></div><ArrowUpRight size={25} /></a>}<div className="case-repo-actions"><ActionLink href={project.repository} external>Inspect the source</ActionLink>{project.demo && <ActionLink href={project.demo} secondary external>Open working demo</ActionLink>}</div></section><AssetGallery assets={project.assets.filter((asset) => asset.kind !== 'video')} /></div>
-    </div><section className="next-project container"><span className="mono">CONTINUE EXPLORING / NEXT SYSTEM</span><Link href={`/projects/${next.id}/`}><div><span className="mono">{next.number} / {next.category}</span><h2>{next.name}</h2></div><ArrowUpRight /></Link></section>
+    </div><nav className="case-navigation container" aria-label="Adjacent case studies"><Link href={`/projects/${previous.id}/`}><span className="mono">← PREVIOUS / {previous.number}</span><strong>{previous.name}</strong></Link><Link href={`/projects/${next.id}/`}><span className="mono">NEXT / {next.number} →</span><strong>{next.name}</strong></Link></nav>
   </main><Footer /></>;
 }

@@ -1,29 +1,28 @@
-'use client';
-
-import { useState } from 'react';
-import { ArrowDown, MoveUpRight } from 'lucide-react';
-import { editorial, profile } from '@/content/profile';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
+import { profile } from '@/content/profile';
 import { ActionLink } from './ui';
-import { CoreExperience } from './core-experience';
-import { DraftingGrid } from './drafting-grid';
-import { artifactLayers, artifactModes, type ArtifactMode } from '@/content/artifact';
+import { EditorialPhoto } from './editorial-photo';
 
 export function Hero() {
-  const [mode, setMode] = useState<ArtifactMode>('form');
-  return <section className="hero" id="top" aria-labelledby="hero-title">
-    <DraftingGrid />
-    <div className="hero-coordinate mono hero-intro"><span className="tiny-cross">+</span><span>{profile.name.toUpperCase()} <span className="hero-coordinate-divider">/</span> SELECTED ENGINEERING WORK</span></div>
-    <div className="hero-visual" aria-hidden="true"><CoreExperience mode={mode} /></div>
-    <div className="hero-orbit-label mono"><span>FIG. 001</span><span>THE SYSTEM ASSEMBLY</span><i /></div>
-    <div className="hero-title-wrap">
-      <p className="eyebrow hero-intro">{editorial.hero.eyebrow}</p>
-      <h1 id="hero-title" aria-label="Engineering the unseen."><span className="hero-line"><span className="hero-word">{editorial.hero.first}</span></span><span className="hero-line hero-line-bottom"><span className="hero-word">THE <span className="unseen">UNSEEN<span className="hero-period">.</span></span></span></span></h1>
+  return <section className="opening-scene" id="top" aria-labelledby="hero-title">
+    <div className="opening-stage">
+      <div className="opening-image" aria-hidden="true">
+        <EditorialPhoto name="concrete" className="opening-background" priority />
+        <div className="opening-red-plane" />
+        <EditorialPhoto name="concrete" className="opening-foreground" priority />
+        <div className="opening-image-shade" />
+        <div className="opening-registration"><span>+</span><span>+</span><span>+</span><span>+</span></div>
+      </div>
+      <div className="opening-topline mono"><span>[ 01 — THE OPENING ]</span><span>AN INDEPENDENT ENGINEERING PORTFOLIO</span></div>
+      <div className="opening-copy">
+        <p className="opening-statement">ENGINEERING<br />THE UNSEEN<span>.</span></p>
+        <h1 id="hero-title" aria-label={profile.name}><span className="name-mask"><span>SATYAM</span></span><span className="name-mask"><span>SHRIVASTAV</span></span></h1>
+        <p className="opening-intro">{profile.introduction}</p>
+        <div className="opening-actions"><ActionLink href="#work" down>EXPLORE WORK</ActionLink><a className="text-link" href={profile.links[0].url} target="_blank" rel="noopener noreferrer">VIEW GITHUB <ArrowUpRight size={16} /><span className="sr-only"> (opens in a new tab)</span></a></div>
+      </div>
+      <div className="opening-side-note mono"><span>PERCEPTION</span><span>REASONING</span><span>EXECUTION</span><i /><span>SYSTEMS THAT<br />MAKE SENSE.</span></div>
+      <div className="opening-bottom mono"><span>STUDENT / BUILDER / PROBLEM SOLVER</span><a href="#work">SCROLL TO EXPLORE <ArrowDown size={16} /></a><span className="opening-frame">01 <i><b /></i> 02</span></div>
+      <div className="opening-handoff" aria-hidden="true"><span className="mono">02 / FROM IDEAS TO SYSTEMS</span><strong>THE WORK<span>↘</span></strong></div>
     </div>
-    <div className="hero-bottom">
-      <div className="hero-actions hero-intro"><ActionLink href="#work" down>Explore the work <span className="action-count">08</span></ActionLink><a className="text-link" href={profile.links[0].url} target="_blank" rel="noopener noreferrer">Behind the code <MoveUpRight size={14} /><span className="sr-only"> on GitHub (opens in a new tab)</span></a></div>
-      <div className="hero-description hero-intro"><span className="mono hero-name">{profile.name.toUpperCase()} — ENGINEER & BUILDER</span><p>{profile.headline}</p></div>
-    </div>
-    <div className="artifact-description" role="status"><span className="mono">{artifactModes.find((item) => item.id === mode)?.description}</span>{mode === 'layers' && <ol className="artifact-layer-legend">{artifactLayers.map((layer, index) => <li key={layer}><span>0{index + 1}</span>{layer}</li>)}</ol>}</div>
-    <div className="hero-floor mono hero-intro"><a href="#work" className="scroll-cue"><span className="scroll-line" /><ArrowDown size={13} /> SCROLL TO DISCOVER</a><div className="scene-controls" role="group" aria-label="3D core appearance">{artifactModes.map((item) => <button key={item.id} onClick={() => setMode(item.id)} aria-pressed={mode === item.id}>{item.label}</button>)}</div><span className="hero-edition">FORM FOLLOWS UNDERSTANDING.</span></div>
   </section>;
 }

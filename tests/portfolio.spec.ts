@@ -7,7 +7,9 @@ test('homepage is complete, error-free, and exposes all eight projects', async (
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ENGINEERINGTHE UNSEEN.');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Satyam Shrivastav');
+  await expect(page.locator('.featured-project')).toHaveCount(4);
+  await expect(page.locator('#journey')).toBeAttached();
   for (const slug of slugs) await expect(page.locator(`#work a[href="/projects/${slug}/"]`).first()).toBeAttached();
   await expect(page.locator('#about')).toBeAttached();
   await expect(page.locator('#capabilities')).toBeAttached();
@@ -20,8 +22,8 @@ test('project filtering preserves the selected category and restores the index',
   await page.goto('/#work');
   await page.getByRole('button', { name: 'Security systems' }).click();
   await expect(page.locator('#work [role="status"]')).toContainText('Showing 3 projects');
-  await expect(page.locator('#work a[href="/projects/argus/"]')).toHaveCount(0);
-  await expect(page.locator('#work a[href="/projects/callshield/"]').first()).toBeVisible();
+  await expect(page.locator('#project-index a[href="/projects/argus/"]')).toHaveCount(0);
+  await expect(page.locator('#project-index a[href="/projects/callshield/"]').first()).toBeVisible();
   await page.getByRole('button', { name: 'All systems' }).click();
   await expect(page.locator('#work [role="status"]')).toContainText('Showing 8 projects');
 });
@@ -64,6 +66,7 @@ test('all case studies support direct loading, architecture inspection, and refr
     await expect(lastNode).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('#architecture-detail')).not.toBeEmpty();
     await expect(page.locator('#evidence')).toBeAttached();
+    await expect(page.getByRole('navigation', { name: 'Adjacent case studies' }).getByRole('link')).toHaveCount(2);
     expect(await page.locator('title').textContent()).toContain('Satyam Shrivastav');
   }
   await page.reload();
@@ -143,6 +146,7 @@ test('navigation supports mobile menu and browser back', async ({ page, isMobile
 test('normal-motion mode uses responsive artwork, switches appearance, and pauses', async ({ page, isMobile }) => {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.goto('/');
+  await page.getByRole('button', { name: 'Inspect the system assembly' }).click();
   if (isMobile) {
     await expect(page.locator('.core-poster')).toBeVisible();
     await expect(page.locator('.signal-core canvas')).toHaveCount(0);
@@ -151,7 +155,7 @@ test('normal-motion mode uses responsive artwork, switches appearance, and pause
   await expect(page.getByRole('button', { name: '02 / SIGNAL' })).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'Pause animations' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-motion', 'off');
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.locator('.assembly-study')).toBeVisible();
   await page.getByRole('button', { name: 'Enable animations' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-motion', 'on');
 });
@@ -166,6 +170,7 @@ test('WebGL failure retains the static artwork and usable page', async ({ page }
     } as typeof original;
   });
   await page.goto('/');
+  await page.getByRole('button', { name: 'Inspect the system assembly' }).click();
   await expect(page.locator('.core-poster')).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await page.getByRole('button', { name: 'Open command palette' }).click();
@@ -209,13 +214,9 @@ test('static content and project navigation remain usable without JavaScript', a
   await context.close();
 });
 
-test('assembly layers have meaningful, keyboard-accessible controls', async ({ page, isMobile }) => {
+test('assembly layers have meaningful, keyboard-accessible controls', async ({ page }) => {
   await page.goto('/');
-  if (isMobile) {
-    const poster = await page.locator('.core-poster img').boundingBox();
-    const title = await page.locator('.hero-title-wrap').boundingBox();
-    expect(poster && title && poster.y + poster.height <= title.y).toBe(true);
-  }
+  await page.getByRole('button', { name: 'Inspect the system assembly' }).click();
   const layers = page.getByRole('button', { name: '03 / LAYERS' });
   await layers.focus();
   await layers.press('Enter');

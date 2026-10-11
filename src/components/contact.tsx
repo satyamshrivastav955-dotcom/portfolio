@@ -16,7 +16,7 @@ export function Contact() {
   };
   return <section id="contact" className="contact-section section-pad">
     <div className="container">
-      <SectionLabel number="05">NEXT CONNECTION</SectionLabel>
+      <SectionLabel number="06">THE NEXT CONNECTION</SectionLabel>
       <div className="contact-top" data-reveal>
         <div><p className="eyebrow">IDEAS ARE BETTER WHEN THEY CONNECT.</p><h2>LET’S BUILD<br /><span>SOMETHING</span><br />MEANINGFUL<span className="contact-dot">.</span></h2></div>
         <div className="contact-aside">
@@ -44,3 +44,4 @@ export function Contact() {
 export function Footer() {
   return <footer className="site-footer container"><Link href="/#top" className="footer-brand"><Mark /><span>{profile.name.toUpperCase()}</span></Link><span className="mono">© {new Date().getFullYear()} · BUILT WITH INTENT.</span><a href="#main" className="back-top mono">BACK TO TOP <ArrowUp size={15} /></a></footer>;
 }
+

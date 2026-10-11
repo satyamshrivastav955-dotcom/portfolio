@@ -9,7 +9,7 @@ import { projects } from '@/content/projects';
 import { Mark } from './ui';
 import { useMotionPreference } from './motion-provider';
 
-const sections = [{ id: 'work', label: 'Selected work' }, { id: 'about', label: 'About' }, { id: 'capabilities', label: 'Capabilities' }, { id: 'contact', label: 'Contact' }];
+const sections = [{ id: 'top', label: 'Home', number: '01' }, { id: 'work', label: 'Selected work', number: '02' }, { id: 'about', label: 'About', number: '03' }, { id: 'capabilities', label: 'Tools', number: '04' }, { id: 'journey', label: 'Journey', number: '05' }, { id: 'contact', label: 'Contact', number: '06' }];
 const commands = [
   ...sections.map((section) => ({ title: section.label, meta: 'SECTION', href: `/#${section.id}` })),
   ...projects.map((project) => ({ title: project.name, meta: project.subtitle, href: `/projects/${project.id}/` })),
@@ -82,8 +82,8 @@ export function Header() {
   return <>
     <a className="skip-link" href="#main">Skip to content</a>
     <header className="site-header">
-      <Link href="/" className="wordmark" aria-label={`${profile.name}, home`}><Mark /><span>SATYAM<span className="wordmark-dot">.</span><small>SHRIVASTAV</small></span></Link>
-      <nav className="desktop-nav" aria-label="Main navigation">{sections.map((section) => <Link href={`/#${section.id}`} key={section.id} aria-current={pathname === '/' && active === section.id ? 'location' : undefined}>{section.label}{section.id === 'work' && <sup>08</sup>}</Link>)}</nav>
+      <Link href="/" className="wordmark" aria-label={`${profile.name}, home`}><Mark /><span>S.S<span className="wordmark-dot">●</span></span></Link>
+      <nav className="desktop-nav" aria-label="Main navigation">{sections.map((section) => <Link href={`/#${section.id}`} key={section.id} aria-current={pathname === '/' && active === section.id ? 'location' : undefined}><span className="nav-number">{section.number}</span>{section.label}</Link>)}</nav>
       <div className="header-tools">
         {reduced ? <span className="reduced-label mono">LOW MOTION</span> : <button className="icon-button motion-button" onClick={toggle} aria-label={paused ? 'Enable animations' : 'Pause animations'} title={paused ? 'Enable animations' : 'Pause animations'}>{paused ? <Play size={16} /> : <Pause size={16} />}</button>}
         <button className="search-trigger" onClick={openSearch} aria-label="Open command palette"><Command size={15} /><span>K</span></button>

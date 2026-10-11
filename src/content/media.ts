@@ -2,6 +2,12 @@ import type { ProjectAsset, ProjectId } from './types';
 
 const source = 'https://github.com/satyamshrivastav955-dotcom';
 
+// Editorial photography only: never presented as project output or a portrait of the owner.
+export const editorialPhotography = {
+  architecture: { src: '/editorial/architecture.webp', alt: 'Monochrome architectural photograph of stepped glass towers, viewed from below.', sourceUrl: 'https://images.unsplash.com/photo-1511818966892-d7d671e672a2', credit: 'Architecture photograph / Unsplash' },
+  concrete: { src: '/editorial/concrete.webp', alt: 'Monochrome architectural photograph of a cantilevered geometric building and sloping glass facade.', sourceUrl: 'https://images.unsplash.com/photo-1487958449943-2429e8be8625', credit: 'Architecture photograph / Unsplash' },
+} as const;
+
 // Reviewed repository media. These are distinct from the portfolio's conceptual SVG previews.
 // REPLACE_ME: add further verified screenshots, recordings and benchmark artifacts here.
 export const projectMedia: Partial<Record<ProjectId, ProjectAsset[]>> = {

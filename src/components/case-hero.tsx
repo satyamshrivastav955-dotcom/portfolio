@@ -1,7 +1,8 @@
 import { ArrowLeft } from 'lucide-react';
 import type { Project } from '@/content/types';
 import { ActionLink } from './ui';
-import { ProjectVisual } from './project-visual';
+import { ProjectArtwork } from './project-artwork';
+import { RepositoryVideo } from './repository-video';
 import Link from './transition-link';
 
 export function CaseHero({ project }: { project: Project }) {
@@ -31,12 +32,9 @@ export function CaseHero({ project }: { project: Project }) {
           <span>{recording ? 'REPOSITORY RECORDING / MUJOCO SIMULATION' : project.subtitle.toUpperCase()}</span>
         </div>
         {recording ? (
-          <video className="case-hero-recording" controls playsInline preload="none" poster={recording.poster} width={recording.width} height={recording.height} aria-label={recording.alt}>
-            <source src={recording.src} type="video/webm" />
-            <a href={recording.src}>Open the simulation recording</a>
-          </video>
-        ) : <ProjectVisual id={project.id} />}
-        <span className="art-caption mono">{recording ? 'REAL REPOSITORY MEDIA · SIMULATION · PLAY ON DEMAND' : 'ORIGINAL EXPLANATORY VISUAL · NOT AN IMPLEMENTATION SCREENSHOT'}</span>
+          <RepositoryVideo asset={recording} />
+        ) : <ProjectArtwork project={project} />}
+        {recording && <span className="art-caption mono">REAL REPOSITORY MEDIA · SIMULATION · PLAY ON DEMAND</span>}
       </div>
       {recording && <p className="case-video-caption">{recording.caption}{recording.sourceUrl && <a href={recording.sourceUrl} target="_blank" rel="noopener noreferrer">View original source ↗</a>}</p>}
       <div className="case-stack">

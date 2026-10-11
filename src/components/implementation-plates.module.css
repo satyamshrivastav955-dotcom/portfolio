@@ -1,0 +1,16 @@
+.plate { position: relative; width: 100%; height: 100%; background: #151613; overflow: hidden; }
+.plate > img { width: 100%; height: 100%; max-width: none; object-fit: contain; object-position: center; border: none; }
+.plate > .portrait { display: none; }
+:global(.featured-project) .hasPortrait > .landscape { display: none; }
+:global(.featured-project) .hasPortrait > .portrait { display: block; }
+:global(.case-visual):has(.plate) { background: #151613; }
+:global(.case-visual):has(.plate) > :global(.project-art-meta) { display: none; }
+.evidenceFrame { position: relative; padding: clamp(16px, 3vw, 30px); background: #22241f; border-top: 3px solid #de3828; }
+.evidenceFrame::before { content: '+'; position: absolute; top: 5px; right: 10px; font: 14px/1 monospace; color: #b8bcad; }
+.evidenceFrame > img { border: 1px solid #797e6a66; }
+.monochrome { filter: grayscale(1); }
+.sourceLink { display: inline-flex; align-items: center; gap: 12px; padding: 12px 0 3px; min-height: 44px; font: 10px/1.6 var(--mono-font); letter-spacing: .04em; color: #d9dbcc; border-bottom: 1px solid #797e6a66; }
+.sourceLink:hover { color: #ff7665; }
+.sourceLink:focus-visible { outline: 2px solid #ff7665; outline-offset: 5px; }
+.evidenceFrame > .treatment { position: static; margin: 12px 0 0; color: #aeb39f; font-size: 10px; line-height: 1.6; }
+@media (max-width: 600px) { .evidenceFrame { padding: 14px; } .sourceLink { font-size: 9px; } }
